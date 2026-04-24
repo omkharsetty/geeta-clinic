@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"from PIL import Image; print\\('PIL ok'\\)\")",
+      "Bash(python3 -m pip install --user --quiet Pillow)",
+      "Bash(python3 -c \"from PIL import Image; print\\('ok'\\)\")",
+      "Bash(python3)",
+      "Bash(curl -sI https://geetaendocrine.com)",
+      "Bash(curl -s https://geetaendocrine.com)",
+      "Bash(curl -sI https://www.geetaendocrine.com)",
+      "Bash(curl -sI -k https://www.geetaendocrine.com)",
+      "Bash(npm install *)",
+      "Read(//usr/local/bin/**)",
+      "Bash(/opt/homebrew/bin/brew --version)",
+      "Bash(export PATH=\"/usr/local/bin:/opt/homebrew/bin:$PATH\")",
+      "Bash(npm --version)",
+      "Bash(export PATH=\"/usr/local/bin:$PATH\")",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000)",
+      "Bash(git --version)"
+    ]
+  }
+}
