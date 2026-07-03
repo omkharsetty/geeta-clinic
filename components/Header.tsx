@@ -40,7 +40,7 @@ export default function Header() {
       <header className={`header ${scrolled ? 'scrolled' : ''}`}>
         <div className="container header-inner">
           <a href="#home" className="logo">
-            <Image src="/images/logo.png" alt="Geeta Diabetes & Endocrine Centre" width={52} height={52} className="logo-img" priority />
+            <Image src="/images/icon.png" alt="Geeta Diabetes & Endocrine Centre" width={52} height={52} className="logo-img" priority />
             <div className="logo-text">
               <strong>{t('brand.name')}</strong>
               <small>{t('brand.sub')}</small>

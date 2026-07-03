@@ -48,7 +48,7 @@ export default function About() {
                   <span className="cred-label">MD</span>
                   <span className="cred-desc">{t('about.md')}</span>
                 </div>
-                <div className="cred highlight">
+                <div className="cred">
                   <span className="cred-label">DM</span>
                   <span className="cred-desc">{t('about.dm')}</span>
                 </div>

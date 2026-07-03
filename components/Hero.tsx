@@ -5,6 +5,10 @@ import { MessageCircle, Phone, Stethoscope, Award, Sparkles, GraduationCap, Cale
 import { useLang } from './LanguageProvider';
 import { LiveStatusFloating } from './LiveStatus';
 import Reveal from './Reveal';
+import CountUp from './CountUp';
+import Ekg from './Ekg';
+import Particles from './Particles';
+import Molecule from './Molecule';
 import { WA_URL, TEL } from '@/lib/translations';
 
 export default function Hero() {
@@ -15,6 +19,12 @@ export default function Hero() {
       <div className="hero-bg">
         <div className="hero-blob hero-blob-1" />
         <div className="hero-blob hero-blob-2" />
+        <div className="hero-blob hero-blob-3" />
+        <div className="hero-grid-lines" />
+        <Particles />
+        <Molecule className="molecule-1" />
+        <Molecule className="molecule-2" />
+        <Ekg className="hero-ekg" />
       </div>
       <div className="container hero-inner">
         <div className="hero-content">
@@ -52,12 +62,12 @@ export default function Hero() {
               </div>
               <div className="stat">
                 <Calendar className="stat-icon" size={22} />
-                <strong>6<span className="stat-sm">days/wk</span></strong>
+                <strong><CountUp end={6} /><span className="stat-sm">days/wk</span></strong>
                 <span>{t('hero.stat2Title')}</span>
               </div>
               <div className="stat">
                 <Globe className="stat-icon" size={22} />
-                <strong>3<span className="stat-sm">langs</span></strong>
+                <strong><CountUp end={3} /><span className="stat-sm">langs</span></strong>
                 <span>{t('hero.stat3Title')}</span>
               </div>
             </div>
@@ -67,6 +77,7 @@ export default function Hero() {
         <Reveal delay={200}>
           <div className="hero-visual">
             <div className="hero-photo-wrap">
+              <div className="hero-photo-ring" />
               <Image
                 src="/images/doctor.jpeg"
                 alt="Dr. Geeta Annamaneni"

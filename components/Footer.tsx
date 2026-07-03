@@ -13,7 +13,7 @@ export default function Footer() {
       <div className="container footer-inner">
         <div className="footer-brand">
           <div className="footer-logo">
-            <Image src="/images/logo.png" alt="Logo" width={52} height={52} />
+            <Image src="/images/icon.png" alt="Logo" width={52} height={52} />
             <strong>Geeta Diabetes &amp;<br />Endocrine Centre</strong>
           </div>
           <p>{t('footer.about')}</p>

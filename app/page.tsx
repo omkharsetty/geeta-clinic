@@ -10,13 +10,17 @@ import Location from '@/components/Location';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
+import ScrollProgress from '@/components/ScrollProgress';
+import Ticker from '@/components/Ticker';
 
 export default function Home() {
   return (
     <>
+      <ScrollProgress />
       <Header />
       <main>
         <Hero />
+        <Ticker />
         <TrustStrip />
         <About />
         <Services />

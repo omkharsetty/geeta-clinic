@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     description: 'Diabetes, thyroid, PCOS, obesity, and endocrine care in Ongole.',
     images: ['/images/doctor.jpeg'],
   },
-  icons: { icon: '/images/logo.png' },
+  icons: { icon: '/images/icon.png', apple: '/images/icon.png' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

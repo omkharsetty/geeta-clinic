@@ -3,6 +3,8 @@
 import { Droplet, Activity, Flower2, Scale, Sun, Dna, Bone, Video, LucideIcon } from 'lucide-react';
 import { useLang } from './LanguageProvider';
 import Reveal from './Reveal';
+import TiltCard from './TiltCard';
+import Molecule from './Molecule';
 
 type Svc = { icon: LucideIcon; tKey: string; dKey: string; accent: string };
 
@@ -22,6 +24,8 @@ export default function Services() {
 
   return (
     <section id="services" className="section section-alt">
+      <Molecule className="molecule-svc-1" />
+      <Molecule className="molecule-svc-2" />
       <div className="container">
         <Reveal>
           <div className="section-head">
@@ -34,11 +38,11 @@ export default function Services() {
             const Icon = s.icon;
             return (
               <Reveal key={s.tKey} delay={Math.min(i * 70, 420)}>
-                <div className="service-card" style={{ ['--accent' as never]: s.accent }}>
+                <TiltCard className="service-card" style={{ ['--accent' as never]: s.accent }}>
                   <div className="service-icon"><Icon size={28} /></div>
                   <h3>{t(s.tKey)}</h3>
                   <p>{t(s.dKey)}</p>
-                </div>
+                </TiltCard>
               </Reveal>
             );
           })}
