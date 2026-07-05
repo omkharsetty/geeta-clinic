@@ -1,0 +1,238 @@
+<div class="announcement">
+  <div class="container">
+    <p>Now accepting appointments on WhatsApp and phone.</p>
+    <p class="announcement-status" id="liveStatus">Checking clinic status...</p>
+  </div>
+</div>
+
+<header class="site-header" id="header">
+  <div class="container nav-wrap">
+    <a class="brand" href="#home">
+      <img src="/images/logo.png" alt="Geeta Diabetes and Endocrine Centre logo" />
+      <span>
+        <strong>Geeta Diabetes &amp; Endocrine Centre</strong>
+        <small>Dr. Geeta Annamaneni, DM Endocrinology</small>
+      </span>
+    </a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="site-nav" id="nav">
+      <a href="#services">Services</a>
+      <a href="#doctor">Doctor</a>
+      <a href="#schedule">Timings</a>
+      <a href="#location">Location</a>
+      <a class="btn btn-primary" href="https://wa.me/919603062942?text=Hello%20Dr.%20Geeta%2C%20I%20would%20like%20to%20book%20an%20appointment." target="_blank" rel="noopener">Book Now</a>
+    </nav>
+  </div>
+</header>
+
+<main id="home">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="pill">NMC Registered | Reg. No 62613</span>
+        <h1>Sophisticated endocrine and diabetes care designed around you.</h1>
+        <p>Comprehensive treatment for diabetes, thyroid disease, PCOS, obesity, and hormonal disorders with evidence-based protocols and compassionate follow-up.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="tel:+919603062942">Call Clinic</a>
+          <a class="btn btn-secondary" href="https://wa.me/919603062942" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+        <ul class="highlights">
+          <li>DM Endocrinology specialist</li>
+          <li>Open Monday to Saturday</li>
+          <li>In-clinic and teleconsultation support</li>
+        </ul>
+      </div>
+      <div class="hero-visual">
+        <img src="/images/doctor.jpeg" alt="Dr. Geeta Annamaneni in clinic" />
+        <div class="status-card">
+          <p>Clinic Status</p>
+          <strong id="openStatus">Checking...</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section trust">
+    <div class="container trust-grid">
+      <article class="info-card">
+        <div class="icon">🩺</div>
+        <h3>Precision diagnosis</h3>
+        <p>Targeted investigations and clinical review to avoid guesswork.</p>
+      </article>
+      <article class="info-card">
+        <div class="icon">🧪</div>
+        <h3>Evidence-based plans</h3>
+        <p>Treatment strategy aligned to current endocrine guidelines.</p>
+      </article>
+      <article class="info-card">
+        <div class="icon">💙</div>
+        <h3>Patient-first communication</h3>
+        <p>Clear explanations and practical plans for daily life.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="services" class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">Specialized Care</p>
+        <h2>Conditions we manage</h2>
+      </div>
+      <div class="services-grid">
+        <a class="service service-link" href="/services/diabetes-management">
+          <h3><span>🩸</span> Diabetes Management</h3>
+          <p>Type 1, Type 2, and gestational diabetes with individualized medication and glucose monitoring plans.</p>
+          <span class="service-cta">Learn more</span>
+        </a>
+        <a class="service service-link" href="/services/thyroid-disorders">
+          <h3><span>🦋</span> Thyroid Disorders</h3>
+          <p>Diagnosis and treatment for hypo/hyperthyroidism, Hashimoto's, Graves', and thyroid nodules.</p>
+          <span class="service-cta">Learn more</span>
+        </a>
+        <a class="service service-link" href="/services/pcos-hormonal-care">
+          <h3><span>🌸</span> PCOS and Hormonal Care</h3>
+          <p>Comprehensive management of PCOS, menstrual irregularities, insulin resistance, and fertility-related hormonal issues.</p>
+          <span class="service-cta">Learn more</span>
+        </a>
+        <a class="service service-link" href="/services/obesity-metabolic-health">
+          <h3><span>⚖️</span> Obesity and Metabolic Health</h3>
+          <p>Medical weight strategy focused on long-term metabolic outcomes and sustainable lifestyle change.</p>
+          <span class="service-cta">Learn more</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="doctor" class="section section-soft">
+    <div class="container">
+      <div class="doctor-grid">
+        <img src="/images/doctor.jpeg" alt="Consultation room profile of Dr. Geeta Annamaneni" />
+        <div>
+          <p class="kicker">Meet Your Doctor</p>
+          <h2>Dr. Geeta Annamaneni</h2>
+          <p class="doctor-meta">MBBS | MD | DM (Endocrinology)</p>
+          <p>Dr. Geeta offers a refined consultation experience focused on root-cause understanding, long-term metabolic control, and practical day-to-day guidance.</p>
+          <ul class="doctor-points">
+            <li>Structured initial evaluation</li>
+            <li>Transparent treatment explanation</li>
+            <li>Personalized follow-up plan</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="schedule" class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">Clinic Schedule</p>
+        <h2>Consultation hours</h2>
+      </div>
+      <div class="timings-grid" id="timingsDays"></div>
+    </div>
+  </section>
+
+  <section id="location" class="section section-soft">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">Visit Us</p>
+        <h2>Easy to reach in Ongole</h2>
+      </div>
+      <div class="location-grid">
+        <div>
+          <h3>Clinic Address</h3>
+          <address>
+            Geeta Diabetes &amp; Endocrine Centre<br />
+            C/O Focus Diagnostics<br />
+            Chandramama Children Hospital Opposite Road<br />
+            Sundaraiah Bhavan Road<br />
+            Ongole, Andhra Pradesh 523001, India
+          </address>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://maps.app.goo.gl/3ekpf8Zox9pge8CKA" target="_blank" rel="noopener">Open in Maps</a>
+            <a class="btn btn-secondary" href="tel:+919603062942">Call</a>
+          </div>
+        </div>
+        <div class="map">
+          <iframe
+            src="https://www.google.com/maps?q=Focus+Diagnostics+Sundaraiah+Bhavan+Rd+Ongole+Andhra+Pradesh+523001&output=embed"
+            title="Geeta Diabetes and Endocrine Centre location map"
+            loading="lazy"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="cta-panel">
+        <h2>Need an appointment quickly?</h2>
+        <p>Reach us directly and get support on consultation slots, reports, and follow-ups.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://wa.me/919603062942?text=Hello%20Dr.%20Geeta%2C%20I%20would%20like%20to%20book%20an%20appointment." target="_blank" rel="noopener">Chat on WhatsApp</a>
+          <a class="btn btn-secondary" href="tel:+919603062942">Call +91 96030 62942</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-soft" id="faq">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">FAQ</p>
+        <h2>Common patient questions</h2>
+      </div>
+      <div class="faq-grid">
+        <article class="faq-item">
+          <h3>How do I book an appointment?</h3>
+          <p>You can call the clinic directly or book instantly on WhatsApp using the Book Now button.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Do you treat both diabetes and thyroid conditions?</h3>
+          <p>Yes. The clinic provides specialist care for diabetes, thyroid disorders, PCOS, and broader endocrine issues.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Are teleconsultations available?</h3>
+          <p>Yes, teleconsultation support is available, especially for follow-up and ongoing treatment guidance.</p>
+        </article>
+        <article class="faq-item">
+          <h3>What should I bring for my first visit?</h3>
+          <p>Please bring previous prescriptions, lab reports, and details of any medicines currently being taken.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="brand brand-footer" href="#home">
+          <img src="/images/logo.png" alt="Geeta clinic logo" />
+          <span>
+            <strong>Geeta Diabetes &amp; Endocrine Centre</strong>
+            <small>Ongole, Andhra Pradesh</small>
+          </span>
+        </a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p><a href="tel:+919603062942">+91 96030 62942</a></p>
+        <p><a href="https://wa.me/919603062942" target="_blank" rel="noopener">WhatsApp Support</a></p>
+      </div>
+      <div>
+        <h4>Quick links</h4>
+        <p><a href="/services">Services</a></p>
+        <p><a href="/services/diabetes-management">Diabetes Care</a></p>
+        <p><a href="#schedule">Timings</a></p>
+        <p><a href="#location">Location</a></p>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p id="copyright">© 2026 Geeta Diabetes &amp; Endocrine Centre. Informational only; not a substitute for medical advice.</p>
+    </div>
+  </footer>
+</main>

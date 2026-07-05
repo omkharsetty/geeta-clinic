@@ -1,7 +1,8 @@
-node_modules/
-.next/
-out/
+node_modules
+.next
+out
+*.log
 .env*.local
 .DS_Store
-*.log
 static-backup/
+.claude/
