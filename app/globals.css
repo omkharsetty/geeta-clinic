@@ -2349,3 +2349,40 @@ button { font-family: inherit; }
   .clinic-rx-row { flex-wrap: wrap; }
   .rx-sheet { padding: 24px 20px; }
 }
+
+/* ---------- Follow-ups ---------- */
+.clinic-badge {
+  background: var(--coral);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  min-width: 19px;
+  height: 19px;
+  border-radius: var(--radius-full);
+  display: inline-grid;
+  place-items: center;
+  padding: 0 5px;
+  margin-left: 4px;
+}
+.clinic-fu-row.overdue { border-color: rgba(255,107,107,0.4); }
+.clinic-fu-date {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 14.5px;
+  color: var(--aqua-bright);
+  min-width: 110px;
+}
+.clinic-fu-date.overdue { color: var(--peach); }
+.clinic-fu-actions { display: flex; align-items: center; gap: 8px; }
+.clinic-fu-book { padding: 8px 16px; font-size: 12.5px; }
+.clinic-fu-scheduled {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #6ee7a0;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 6px 12px;
+  background: rgba(110,231,160,0.1);
+  border-radius: var(--radius-full);
+}

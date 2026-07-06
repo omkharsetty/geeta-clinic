@@ -11,23 +11,29 @@ const TYPES = ['In-Person Clinic', 'Video Teleconsultation'] as const;
 
 export default function NewBookingModal({
   taken,
+  preselect,
+  presetDate,
   onClose,
   onBooked,
 }: {
   /** All existing appointments (both sources), used to block occupied slots. */
   taken: StaffAppointment[];
+  /** Pre-select an existing patient (e.g. booking from the follow-up list). */
+  preselect?: PatientRow;
+  /** Pre-fill the date (e.g. the follow-up date). */
+  presetDate?: string;
   onClose: () => void;
   onBooked: () => void;
 }) {
   const [patients, setPatients] = useState<PatientRow[]>([]);
   const [mode, setMode] = useState<'existing' | 'new'>('existing');
   const [query, setQuery] = useState('');
-  const [selected, setSelected] = useState<PatientRow | null>(null);
+  const [selected, setSelected] = useState<PatientRow | null>(preselect ?? null);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [type, setType] = useState<string>(TYPES[0]);
   const [specialty, setSpecialty] = useState(SPECIALTIES[0]);
-  const [date, setDate] = useState(todayStr());
+  const [date, setDate] = useState(presetDate && presetDate >= todayStr() ? presetDate : todayStr());
   const [slot, setSlot] = useState('');
   const [notes, setNotes] = useState('');
   const [busy, setBusy] = useState(false);

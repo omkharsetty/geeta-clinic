@@ -215,6 +215,12 @@ service cloud.firestore {
       allow get, list: if isActiveStaff();
     }
 
+    // Collection-group access for the follow-up worklist (visits across all
+    // patients). Read-only.
+    match /{path=**}/visits/{visitId} {
+      allow get, list: if isActiveStaff();
+    }
+
     // Bookings created by clinic staff for callers who are not registered
     // patients yet. Staff-only; validated like patient appointments.
     match /clinicBookings/{bookingId} {
