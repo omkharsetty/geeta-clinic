@@ -2135,3 +2135,64 @@ button { font-family: inherit; }
   border-radius: var(--radius-full);
   margin-left: 8px;
 }
+
+/* ---------- Clinic phone input & slot picker ---------- */
+.clinic-phone-row { display: flex; gap: 8px; align-items: stretch; }
+.clinic-phone-row input { flex: 1; }
+.clinic-phone-prefix {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  color: rgba(214,240,237,0.8);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.clinic-slot-group { margin-bottom: 10px; }
+.clinic-slot-period {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(229,193,88,0.85);
+  margin-bottom: 8px;
+}
+.clinic-slots {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.clinic-slot {
+  padding: 10px 4px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(214,240,237,0.8);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.clinic-slot:hover:not(:disabled) { border-color: var(--aqua); color: #fff; }
+.clinic-slot.active {
+  background: linear-gradient(120deg, var(--teal), var(--aqua));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(45,212,191,0.4);
+}
+.clinic-slot.taken {
+  opacity: 0.3;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+.clinic-slot-chosen { color: rgba(214,240,237,0.7); font-size: 13px; }
+.clinic-slot-chosen strong { color: var(--aqua-bright); }
+
+@media (max-width: 520px) {
+  .clinic-slots { grid-template-columns: repeat(4, 1fr); }
+}

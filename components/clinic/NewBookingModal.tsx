@@ -53,14 +53,18 @@ export default function NewBookingModal({
   const takenSlots = taken.filter((a) => a.date === date).map((a) => a.slot);
   const isSunday = new Date(date + 'T12:00:00').getDay() === 0;
 
+  // Keep only digits, max 10 (Indian mobile number without country code)
+  const onPhoneInput = (v: string) => setPhone(v.replace(/\D/g, '').slice(0, 10));
+
   const bookingName = mode === 'existing' ? selected?.name || '' : name.trim();
-  const bookingPhone = mode === 'existing' ? selected?.phone || phone.trim() : phone.trim();
+  const bookingPhone = mode === 'existing' && selected?.phone ? selected.phone : `+91 ${phone}`;
+  const needsPhoneInput = mode === 'new' || (selected !== null && !selected.phone);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (!bookingName) { setError(mode === 'existing' ? 'Select a patient first.' : 'Enter the caller’s name.'); return; }
-    if (bookingPhone.replace(/\D/g, '').length < 10) { setError('Enter a valid 10-digit phone number.'); return; }
+    if (needsPhoneInput && phone.length !== 10) { setError('Enter the 10-digit mobile number (without +91).'); return; }
     if (!date || !slot || isSunday) { setError('Pick a date (not Sunday) and a free slot.'); return; }
     if (takenSlots.includes(slot)) { setError('That slot was just taken — pick another.'); return; }
 
@@ -156,10 +160,19 @@ export default function NewBookingModal({
             </>
           )}
 
-          {(mode === 'new' || (selected && !selected.phone)) && (
+          {needsPhoneInput && (
             <>
-              <label><Phone size={12} /> Phone</label>
-              <input type="tel" maxLength={30} value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <label><Phone size={12} /> Mobile number</label>
+              <div className="clinic-phone-row">
+                <span className="clinic-phone-prefix">+91</span>
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  placeholder="10-digit number"
+                  value={phone}
+                  onChange={(e) => onPhoneInput(e.target.value)}
+                />
+              </div>
             </>
           )}
 
@@ -184,23 +197,36 @@ export default function NewBookingModal({
 
           {!isSunday && (
             <>
-              <label>Slot</label>
-              <div className="portal-slots">
-                {APPOINTMENT_SLOTS.map((sl) => {
-                  const isTaken = takenSlots.includes(sl);
-                  return (
-                    <button
-                      type="button"
-                      key={sl}
-                      disabled={isTaken}
-                      className={`portal-slot ${slot === sl ? 'active' : ''} ${isTaken ? 'taken' : ''}`}
-                      onClick={() => setSlot(sl)}
-                    >
-                      {sl}
-                    </button>
-                  );
-                })}
-              </div>
+              <label>Time slot</label>
+              {(['Morning', 'Evening'] as const).map((period) => {
+                const slots = APPOINTMENT_SLOTS.filter((sl) =>
+                  period === 'Morning' ? sl.endsWith('AM') || sl.startsWith('12') || sl.startsWith('01') : sl.endsWith('PM') && !sl.startsWith('12') && !sl.startsWith('01')
+                );
+                return (
+                  <div key={period} className="clinic-slot-group">
+                    <span className="clinic-slot-period">
+                      {period} {period === 'Morning' ? '· 9 AM – 1:30 PM' : '· 6 – 7:30 PM'}
+                    </span>
+                    <div className="clinic-slots">
+                      {slots.map((sl) => {
+                        const isTaken = takenSlots.includes(sl);
+                        return (
+                          <button
+                            type="button"
+                            key={sl}
+                            disabled={isTaken}
+                            className={`clinic-slot ${slot === sl ? 'active' : ''} ${isTaken ? 'taken' : ''}`}
+                            onClick={() => setSlot(sl)}
+                          >
+                            {sl.replace(' AM', '').replace(' PM', '')}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+              {slot && <p className="clinic-slot-chosen">Selected: <strong>{slot}</strong></p>}
             </>
           )}
 
