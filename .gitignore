@@ -6,3 +6,4 @@ out
 .DS_Store
 static-backup/
 .claude/
+tsconfig.tsbuildinfo
