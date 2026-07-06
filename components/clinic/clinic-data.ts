@@ -12,7 +12,10 @@ export interface PatientRow {
 
 export interface StaffAppointment {
   id: string;
-  uid: string; // patient uid (parent document)
+  /** Patient uid for registered patients; empty string for clinic-side bookings. */
+  uid: string;
+  /** 'patient' = lives under users/{uid}/appointments; 'clinic' = clinicBookings. */
+  source: 'patient' | 'clinic';
   patientName: string;
   phone: string;
   date: string; // YYYY-MM-DD

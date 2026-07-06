@@ -1,38 +1,61 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collectionGroup, onSnapshot } from 'firebase/firestore';
-import { CalendarDays, Phone, Video, MapPin, User } from 'lucide-react';
+import { collectionGroup, collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
+import { CalendarDays, Phone, Video, MapPin, User, Plus, Trash2, PhoneCall } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { StaffAppointment, slotMinutes, todayStr, formatDate } from './clinic-data';
+import NewBookingModal from './NewBookingModal';
 
 export default function AppointmentsTab({ onOpenPatient }: { onOpenPatient: (uid: string) => void }) {
-  const [appointments, setAppointments] = useState<StaffAppointment[]>([]);
+  const [patientAppts, setPatientAppts] = useState<StaffAppointment[]>([]);
+  const [clinicAppts, setClinicAppts] = useState<StaffAppointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showNew, setShowNew] = useState(false);
 
   useEffect(() => {
-    const unsub = onSnapshot(
-      collectionGroup(db, 'appointments'),
-      (snap) => {
-        const rows: StaffAppointment[] = [];
-        snap.forEach((d) => {
-          const uid = d.ref.parent.parent?.id;
-          if (!uid) return;
-          rows.push({ id: d.id, uid, ...(d.data() as Omit<StaffAppointment, 'id' | 'uid'>) });
-        });
-        setAppointments(rows);
-        setLoading(false);
-      },
-      (err) => {
-        setError(err.message.includes('permission')
-          ? 'Permission denied — make sure the latest security rules are published.'
-          : err.message);
-        setLoading(false);
-      }
-    );
-    return () => unsub();
+    const onErr = (err: Error) => {
+      setError(err.message.includes('permission')
+        ? 'Permission denied — make sure the latest security rules are published.'
+        : err.message);
+      setLoading(false);
+    };
+
+    const unsub1 = onSnapshot(collectionGroup(db, 'appointments'), (snap) => {
+      const rows: StaffAppointment[] = [];
+      snap.forEach((d) => {
+        const uid = d.ref.parent.parent?.id;
+        if (!uid) return;
+        rows.push({ id: d.id, uid, source: 'patient', ...(d.data() as Omit<StaffAppointment, 'id' | 'uid' | 'source'>) });
+      });
+      setPatientAppts(rows);
+      setLoading(false);
+    }, onErr);
+
+    const unsub2 = onSnapshot(collection(db, 'clinicBookings'), (snap) => {
+      const rows: StaffAppointment[] = [];
+      snap.forEach((d) => {
+        rows.push({ id: d.id, uid: '', source: 'clinic', ...(d.data() as Omit<StaffAppointment, 'id' | 'uid' | 'source'>) });
+      });
+      setClinicAppts(rows);
+    }, onErr);
+
+    return () => { unsub1(); unsub2(); };
   }, []);
+
+  const appointments = [...patientAppts, ...clinicAppts];
+
+  const cancel = async (a: StaffAppointment) => {
+    if (!window.confirm(`Cancel ${a.patientName}'s ${a.slot} appointment on ${formatDate(a.date)}?`)) return;
+    try {
+      await deleteDoc(a.source === 'clinic'
+        ? doc(db, 'clinicBookings', a.id)
+        : doc(db, 'users', a.uid, 'appointments', a.id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  };
 
   const today = todayStr();
   const bySlot = (a: StaffAppointment, b: StaffAppointment) =>
@@ -42,46 +65,73 @@ export default function AppointmentsTab({ onOpenPatient }: { onOpenPatient: (uid
   const upcoming = appointments.filter((a) => a.date > today).sort(bySlot);
   const past = appointments.filter((a) => a.date < today).sort(bySlot).reverse().slice(0, 10);
 
+  const Row = ({ a }: { a: StaffAppointment }) => (
+    <div className="clinic-appt-row" onClick={() => a.uid && onOpenPatient(a.uid)} role={a.uid ? 'button' : undefined}>
+      <span className="clinic-appt-slot">{a.slot}</span>
+      <span className="clinic-appt-main">
+        <strong>
+          {a.source === 'clinic' ? <PhoneCall size={13} /> : <User size={13} />} {a.patientName}
+          {a.source === 'clinic' && <em className="clinic-walkin-tag">phone booking</em>}
+        </strong>
+        <small>{a.specialty}{a.notes ? ` — ${a.notes}` : ''}</small>
+      </span>
+      <span className="clinic-appt-side">
+        <small className="clinic-appt-date">{formatDate(a.date)}</small>
+        <small className="clinic-appt-type">
+          {a.type === 'Video Teleconsultation' ? <Video size={12} /> : <MapPin size={12} />}
+          {a.type === 'Video Teleconsultation' ? 'Video' : 'Clinic'}
+        </small>
+        {a.phone && (
+          <a href={`tel:${a.phone}`} onClick={(e) => e.stopPropagation()} className="clinic-appt-phone">
+            <Phone size={12} /> {a.phone}
+          </a>
+        )}
+      </span>
+      <button
+        className="clinic-icon-btn"
+        onClick={(e) => { e.stopPropagation(); cancel(a); }}
+        aria-label="Cancel appointment"
+        title="Cancel appointment"
+      >
+        <Trash2 size={15} />
+      </button>
+    </div>
+  );
+
   const Section = ({ title, rows, empty }: { title: string; rows: StaffAppointment[]; empty: string }) => (
     <div className="clinic-appt-section">
       <h4>{title} <span className="clinic-count">{rows.length}</span></h4>
-      {rows.length === 0 && <p className="clinic-empty">{empty}</p>}
-      {rows.map((a) => (
-        <button key={`${a.uid}-${a.id}`} className="clinic-appt-row" onClick={() => onOpenPatient(a.uid)}>
-          <span className="clinic-appt-slot">{a.slot}</span>
-          <span className="clinic-appt-main">
-            <strong><User size={13} /> {a.patientName}</strong>
-            <small>{a.specialty}{a.notes ? ` — ${a.notes}` : ''}</small>
-          </span>
-          <span className="clinic-appt-side">
-            <small className="clinic-appt-date">{formatDate(a.date)}</small>
-            <small className="clinic-appt-type">
-              {a.type === 'Video Teleconsultation' ? <Video size={12} /> : <MapPin size={12} />}
-              {a.type === 'Video Teleconsultation' ? 'Video' : 'Clinic'}
-            </small>
-            {a.phone && (
-              <a href={`tel:${a.phone}`} onClick={(e) => e.stopPropagation()} className="clinic-appt-phone">
-                <Phone size={12} /> {a.phone}
-              </a>
-            )}
-          </span>
-        </button>
-      ))}
+      {rows.length === 0 && empty && <p className="clinic-empty">{empty}</p>}
+      {rows.map((a) => <Row key={`${a.source}-${a.uid}-${a.id}`} a={a} />)}
     </div>
   );
 
   if (loading) return <div className="clinic-center"><div className="clinic-spinner" /></div>;
-  if (error) return <p className="clinic-error">{error}</p>;
 
   return (
     <div className="clinic-appts">
+      <div className="clinic-appts-toolbar">
+        <button className="btn btn-primary" onClick={() => setShowNew(true)}>
+          <Plus size={16} /> New booking
+        </button>
+      </div>
+      {error && <p className="clinic-error">{error}</p>}
+
       <Section title="Today" rows={todays} empty="No appointments today." />
       <Section title="Upcoming" rows={upcoming} empty="Nothing scheduled ahead." />
       {past.length > 0 && <Section title="Recent" rows={past} empty="" />}
-      {appointments.length === 0 && (
+      {appointments.length === 0 && !error && (
         <p className="clinic-empty">
-          <CalendarDays size={15} /> No appointments in the system yet — they appear here when patients book via the app or website.
+          <CalendarDays size={15} /> No appointments yet — create one with &ldquo;New booking&rdquo;, or they appear when patients book via the app.
         </p>
+      )}
+
+      {showNew && (
+        <NewBookingModal
+          taken={appointments}
+          onClose={() => setShowNew(false)}
+          onBooked={() => {}}
+        />
       )}
     </div>
   );

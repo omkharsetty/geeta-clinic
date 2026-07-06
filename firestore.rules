@@ -203,6 +203,14 @@ service cloud.firestore {
       allow get, list: if isActiveStaff();
     }
 
+    // Bookings created by clinic staff for callers who are not registered
+    // patients yet. Staff-only; validated like patient appointments.
+    match /clinicBookings/{bookingId} {
+      allow get, list: if isActiveStaff();
+      allow create, update: if isActiveStaff() && isValidAppointment(request.resource.data);
+      allow delete: if isActiveStaff();
+    }
+
     // Staff password-rotation metadata: each staff account may manage only its
     // own record, and the timestamp can only ever be set to "now".
     match /staffMeta/{uid} {
@@ -246,6 +254,8 @@ service cloud.firestore {
 
       match /appointments/{appointmentId} {
         allow get, list: if isActiveStaff();
+        allow create, update: if isActiveStaff() && isValidAppointment(request.resource.data);
+        allow delete: if isActiveStaff();
         allow get, list: if isOwner(userId) && isValidId(userId);
         allow create: if isOwner(userId) && isValidId(userId) && isVerifiedUser() && isValidAppointment(request.resource.data);
         allow update: if isOwner(userId) && isValidId(userId) && isVerifiedUser() && isValidAppointment(request.resource.data);
