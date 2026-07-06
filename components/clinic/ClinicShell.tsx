@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { ArrowLeft, LogOut, ShieldCheck, KeyRound, Stethoscope, Users } from 'lucide-react';
+import { ArrowLeft, LogOut, KeyRound, Stethoscope, Users } from 'lucide-react';
 import { useClinicAuth } from './ClinicAuthProvider';
 import ClinicLogin from './ClinicLogin';
 import PasswordChange from './PasswordChange';
+import Dashboard from './Dashboard';
 
 export default function ClinicShell() {
   const { user, role, loading, mustChangePassword, passwordDaysLeft, logout } = useClinicAuth();
@@ -56,18 +57,15 @@ export default function ClinicShell() {
         <PasswordChange />
       ) : (
         <main className="clinic-main">
-          <div className="clinic-card clinic-welcome">
-            <div className="clinic-login-icon"><ShieldCheck size={28} /></div>
-            <h1>Signed in as <span className="accent">{role === 'doctor' ? 'Dr. Geeta' : 'Clinic Staff'}</span></h1>
-            <p className="clinic-sub">
-              Authentication is set up. The dashboard (appointments, patients, records) arrives in the next step.
-            </p>
-            {passwordDaysLeft !== null && (
-              <p className={`clinic-pw-note ${passwordDaysLeft <= 5 ? 'warn' : ''}`}>
+          <div className="clinic-topline">
+            <h1>Welcome, <span className="accent">{role === 'doctor' ? 'Dr. Geeta' : 'Clinic Staff'}</span></h1>
+            {passwordDaysLeft !== null && passwordDaysLeft <= 7 && (
+              <span className="clinic-pw-note warn">
                 <KeyRound size={13} /> Password expires in {passwordDaysLeft} day{passwordDaysLeft === 1 ? '' : 's'}
-              </p>
+              </span>
             )}
           </div>
+          <Dashboard />
         </main>
       )}
     </div>

@@ -214,6 +214,16 @@ export const translations: Record<string, { en: string; te: string }> = {
     en: 'Content is for informational purposes only and does not substitute professional medical advice.',
     te: 'కంటెంట్ సమాచార ప్రయోజనాల కోసం మాత్రమే మరియు వృత్తిపరమైన వైద్య సలహాను భర్తీ చేయదు.',
   },
+
+  // Book Now dialog
+  'book.title': { en: 'Book an Appointment', te: 'అపాయింట్‌మెంట్ బుక్ చేయండి' },
+  'book.sub': { en: 'Choose how you would like to reach us — most patients book on WhatsApp.', te: 'మమ్మల్ని ఎలా సంప్రదించాలో ఎంచుకోండి — చాలామంది పేషెంట్లు వాట్సాప్‌లో బుక్ చేస్తారు.' },
+  'book.waDesc': { en: 'Fastest response · 9 AM – 8 PM', te: 'వేగవంతమైన స్పందన · ఉ 9 – రా 8' },
+  'book.callDesc': { en: 'Speak to the clinic directly', te: 'క్లినిక్‌తో నేరుగా మాట్లాడండి' },
+  'book.visitTitle': { en: 'Walk in', te: 'నేరుగా రండి' },
+  'book.visitDesc': { en: 'Mon–Sat · 9 AM–2 PM & 6–8 PM', te: 'సోమ–శని · ఉ 9–మ 2 & సా 6–8' },
+  'book.directions': { en: 'Get directions', te: 'దారి చూడండి' },
+  'book.close': { en: 'Close', te: 'మూసివేయండి' },
 };
 
 export const WA_URL = 'https://wa.me/919603062942?text=Hello%20Dr.%20Geeta%2C%20I%20would%20like%20to%20book%20an%20appointment.';

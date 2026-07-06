@@ -6,12 +6,14 @@ import { Menu, X, Phone, MapPin } from 'lucide-react';
 import { useLang } from './LanguageProvider';
 import LanguageToggle from './LanguageToggle';
 import { LiveStatusBadge } from './LiveStatus';
-import { WA_URL, TEL, PHONE_DISPLAY } from '@/lib/translations';
+import BookNowModal from './BookNowModal';
+import { TEL, PHONE_DISPLAY } from '@/lib/translations';
 
 export default function Header() {
   const { t } = useLang();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [bookOpen, setBookOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -54,9 +56,12 @@ export default function Header() {
             <a href="#timings" onClick={closeMenu}>{t('nav.timings')}</a>
             <a href="#faq" onClick={closeMenu}>{t('nav.faq')}</a>
             <a href="#contact" onClick={closeMenu}>{t('nav.contact')}</a>
-            <a href={WA_URL} className="btn btn-primary" target="_blank" rel="noopener" onClick={closeMenu}>
+            <button
+              className="btn btn-primary"
+              onClick={() => { closeMenu(); setBookOpen(true); }}
+            >
               {t('nav.bookNow')}
-            </a>
+            </button>
           </nav>
 
           <button className="menu-btn" onClick={() => setOpen((v) => !v)} aria-label="Menu">
@@ -64,6 +69,8 @@ export default function Header() {
           </button>
         </div>
       </header>
+
+      <BookNowModal open={bookOpen} onClose={() => setBookOpen(false)} />
     </>
   );
 }

@@ -197,6 +197,12 @@ service cloud.firestore {
 
     // Match Rules for Collections
 
+    // Collection-group access so the clinic console can query appointments
+    // across all patients (e.g. "today's appointments"). Read-only.
+    match /{path=**}/appointments/{appointmentId} {
+      allow get, list: if isActiveStaff();
+    }
+
     // Staff password-rotation metadata: each staff account may manage only its
     // own record, and the timestamp can only ever be set to "now".
     match /staffMeta/{uid} {
