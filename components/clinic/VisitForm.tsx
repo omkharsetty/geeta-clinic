@@ -48,10 +48,12 @@ export default function VisitForm({
     }));
   };
 
+  const isDoctor = role === 'doctor';
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    const meds = rx.filter((r) => r.medicine.trim());
+    const meds = isDoctor ? rx.filter((r) => r.medicine.trim()) : [];
     setBusy(true);
     try {
       const vitals: Vitals = {
@@ -73,9 +75,10 @@ export default function VisitForm({
         })),
         ...(Object.keys(vitals).length ? { vitals } : {}),
         ...(complaint.trim() ? { complaint: complaint.trim() } : {}),
-        ...(diagnosis.trim() ? { diagnosis: diagnosis.trim() } : {}),
-        ...(advice.trim() ? { advice: advice.trim() } : {}),
-        ...(followUp ? { followUpDate: followUp } : {}),
+        // Clinical fields are doctor-only (also enforced by security rules)
+        ...(isDoctor && diagnosis.trim() ? { diagnosis: diagnosis.trim() } : {}),
+        ...(isDoctor && advice.trim() ? { advice: advice.trim() } : {}),
+        ...(isDoctor && followUp ? { followUpDate: followUp } : {}),
       };
       const ref = await addDoc(collection(db, 'users', uid, 'visits'), data);
       onSaved({ id: ref.id, ...data } as Visit);
@@ -92,7 +95,12 @@ export default function VisitForm({
     <div className="book-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="New visit">
       <div className="book-modal clinic-book-modal clinic-visit-modal" onClick={(e) => e.stopPropagation()}>
         <button className="book-close" onClick={onClose} aria-label="Close"><X size={18} /></button>
-        <h3><Stethoscope size={18} /> New visit — {patientName}</h3>
+        <h3><Stethoscope size={18} /> {isDoctor ? 'New visit' : 'Record vitals'} — {patientName}</h3>
+        {!isDoctor && (
+          <p className="clinic-sub" style={{ marginTop: -4 }}>
+            Staff can record vitals and the patient&rsquo;s complaint. Diagnosis and prescriptions are added by the doctor.
+          </p>
+        )}
 
         <form onSubmit={submit} className="clinic-form">
           <label>Vitals</label>
@@ -109,17 +117,25 @@ export default function VisitForm({
             </select>
           </div>
 
-          <div className="clinic-form-2col">
-            <div>
+          {isDoctor ? (
+            <div className="clinic-form-2col">
+              <div>
+                <label>Complaint</label>
+                <textarea rows={2} maxLength={2000} value={complaint} onChange={(e) => setComplaint(e.target.value)} />
+              </div>
+              <div>
+                <label>Diagnosis</label>
+                <textarea rows={2} maxLength={2000} value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} />
+              </div>
+            </div>
+          ) : (
+            <>
               <label>Complaint</label>
-              <textarea rows={2} maxLength={2000} value={complaint} onChange={(e) => setComplaint(e.target.value)} />
-            </div>
-            <div>
-              <label>Diagnosis</label>
-              <textarea rows={2} maxLength={2000} value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} />
-            </div>
-          </div>
+              <textarea rows={2} maxLength={2000} value={complaint} onChange={(e) => setComplaint(e.target.value)} placeholder="Why has the patient come in?" />
+            </>
+          )}
 
+          {isDoctor && (<>
           <label>Prescription</label>
           <datalist id="common-meds">
             {COMMON_MEDS.map((m) => <option key={m} value={m} />)}
@@ -181,9 +197,10 @@ export default function VisitForm({
               <input type="date" value={followUp} onChange={(e) => setFollowUp(e.target.value)} />
             </div>
           </div>
+          </>)}
 
           <button className="btn btn-primary btn-lg" disabled={busy}>
-            {busy ? 'Saving…' : 'Save visit'}
+            {busy ? 'Saving…' : isDoctor ? 'Save visit' : 'Save vitals'}
           </button>
           {error && <p className="clinic-error">{error}</p>}
         </form>

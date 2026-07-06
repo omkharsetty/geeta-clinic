@@ -45,6 +45,10 @@ service cloud.firestore {
       return isStaffEmail() && staffPasswordFresh();
     }
 
+    function isDoctor() {
+      return isSignedIn() && request.auth.token.email == 'doctor@geetaendocrine.com';
+    }
+
     function isValidId(id) {
       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
     }
@@ -285,8 +289,17 @@ service cloud.firestore {
       match /visits/{visitId} {
         allow get, list: if isActiveStaff();
         allow get, list: if isOwner(userId) && isValidId(userId);
-        allow create, update: if isActiveStaff() && isValidVisit(request.resource.data);
-        allow delete: if isActiveStaff();
+        // Staff may record intake (vitals/complaint) only; prescriptions,
+        // diagnosis, advice and follow-up require the doctor account.
+        allow create, update: if isActiveStaff() && isValidVisit(request.resource.data)
+          && (isDoctor() || (
+            request.resource.data.prescriptions.size() == 0
+            && request.resource.data.createdBy == 'staff'
+            && !('diagnosis' in request.resource.data)
+            && !('advice' in request.resource.data)
+            && !('followUpDate' in request.resource.data)
+          ));
+        allow delete: if isDoctor();
       }
 
       match /externalReports/{reportId} {

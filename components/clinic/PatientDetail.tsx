@@ -200,7 +200,8 @@ export default function PatientDetail({ uid, onBack }: { uid: string; onBack: ()
           onSaved={(v) => {
             setVisits((prev) => [v, ...prev]);
             setShowVisitForm(false);
-            setPrintVisit(v);
+            // Only open the prescription preview when there is one to print
+            if (v.prescriptions.length > 0) setPrintVisit(v);
           }}
         />
       )}
