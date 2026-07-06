@@ -36,7 +36,9 @@ export default function Footer() {
       <div className="footer-bottom">
         <div className="container">
           <p>{t('footer.copy')}</p>
-          <p className="small">{t('footer.disclaimer')}</p>
+          <p className="small">
+            {t('footer.disclaimer')} · <a href="/clinic" className="footer-staff-link">Staff Login</a>
+          </p>
         </div>
       </div>
     </footer>

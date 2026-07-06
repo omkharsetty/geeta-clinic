@@ -2547,3 +2547,7 @@ button { font-family: inherit; }
 .obook-done-icon { background: linear-gradient(135deg, #22c55e, var(--aqua)); }
 .clinic-web-request { border-color: rgba(94,234,212,0.35); background: rgba(45,212,191,0.06); cursor: default; }
 .clinic-appt-section h4 svg { vertical-align: -2px; margin-right: 4px; color: var(--aqua-bright); }
+
+/* discreet staff link in footer */
+.footer-staff-link { display: inline !important; padding: 0 !important; color: #7fa8a5 !important; font-size: 12px; }
+.footer-staff-link:hover { color: #fff !important; }
