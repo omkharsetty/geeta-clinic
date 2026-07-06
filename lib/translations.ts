@@ -224,6 +224,32 @@ export const translations: Record<string, { en: string; te: string }> = {
   'book.visitDesc': { en: 'Mon–Sat · 9 AM–2 PM & 6–8 PM', te: 'సోమ–శని · ఉ 9–మ 2 & సా 6–8' },
   'book.directions': { en: 'Get directions', te: 'దారి చూడండి' },
   'book.close': { en: 'Close', te: 'మూసివేయండి' },
+
+  // Online booking page
+  'ob.title': { en: 'Book an Appointment', te: 'అపాయింట్‌మెంట్ బుక్ చేయండి' },
+  'ob.sub': { en: 'Request your preferred slot — the clinic will confirm on WhatsApp or by call.', te: 'మీకు నచ్చిన సమయాన్ని ఎంచుకోండి — క్లినిక్ వాట్సాప్ లేదా కాల్ ద్వారా నిర్ధారిస్తుంది.' },
+  'ob.name': { en: 'Your name', te: 'మీ పేరు' },
+  'ob.phone': { en: 'Mobile number', te: 'మొబైల్ నంబర్' },
+  'ob.type': { en: 'Appointment type', te: 'అపాయింట్‌మెంట్ రకం' },
+  'ob.inPerson': { en: 'Visit clinic', te: 'క్లినిక్‌కి రండి' },
+  'ob.video': { en: 'Video consult', te: 'వీడియో కన్సల్ట్' },
+  'ob.specialty': { en: 'Reason for visit', te: 'సందర్శన కారణం' },
+  'ob.date': { en: 'Preferred date', te: 'తేదీ' },
+  'ob.slot': { en: 'Preferred time', te: 'సమయం' },
+  'ob.morning': { en: 'Morning · 9 AM – 1:30 PM', te: 'ఉదయం · 9 – 1:30' },
+  'ob.evening': { en: 'Evening · 6 – 7:30 PM', te: 'సాయంత్రం · 6 – 7:30' },
+  'ob.notes': { en: 'Anything the doctor should know? (optional)', te: 'డాక్టర్ తెలుసుకోవాల్సినది ఏమైనా ఉందా? (ఐచ్ఛికం)' },
+  'ob.submit': { en: 'Request Appointment', te: 'అపాయింట్‌మెంట్ అభ్యర్థించండి' },
+  'ob.sunday': { en: 'The clinic is closed on Sundays — please pick another day.', te: 'ఆదివారం క్లినిక్ సెలవు — దయచేసి వేరే రోజు ఎంచుకోండి.' },
+  'ob.doneTitle': { en: 'Request received!', te: 'అభ్యర్థన అందింది!' },
+  'ob.doneSub': { en: 'The clinic will confirm your appointment shortly on WhatsApp or by call.', te: 'క్లినిక్ త్వరలో వాట్సాప్ లేదా కాల్ ద్వారా మీ అపాయింట్‌మెంట్ నిర్ధారిస్తుంది.' },
+  'ob.doneWa': { en: 'Confirm faster on WhatsApp', te: 'వాట్సాప్‌లో వేగంగా నిర్ధారించండి' },
+  'ob.another': { en: 'Book another', te: 'మరొకటి బుక్ చేయండి' },
+  'ob.subjectNote': { en: 'Slot subject to confirmation by the clinic.', te: 'సమయం క్లినిక్ నిర్ధారణకు లోబడి ఉంటుంది.' },
+  'ob.errName': { en: 'Please enter your name and a valid 10-digit mobile number.', te: 'దయచేసి మీ పేరు మరియు సరైన 10 అంకెల మొబైల్ నంబర్ నమోదు చేయండి.' },
+  'ob.errSlot': { en: 'Please pick a date and time.', te: 'దయచేసి తేదీ మరియు సమయం ఎంచుకోండి.' },
+  'book.online': { en: 'Book online', te: 'ఆన్‌లైన్ బుకింగ్' },
+  'book.onlineDesc': { en: 'Pick a slot — confirmed on WhatsApp', te: 'సమయం ఎంచుకోండి — వాట్సాప్‌లో నిర్ధారణ' },
 };
 
 export const WA_URL = 'https://wa.me/919603062942?text=Hello%20Dr.%20Geeta%2C%20I%20would%20like%20to%20book%20an%20appointment.';

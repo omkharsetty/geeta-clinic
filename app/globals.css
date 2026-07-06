@@ -2524,3 +2524,26 @@ button { font-family: inherit; }
 .clinic-reminder-alt:hover { border-color: var(--aqua) !important; color: #fff !important; }
 .clinic-reminder-note { color: rgba(214,240,237,0.5); font-size: 12.5px; text-align: center; }
 .clinic-reminder-note strong { color: rgba(214,240,237,0.85); }
+
+/* ---------- Online booking (public) + web requests (console) ---------- */
+.book-option-online .book-option-icon {
+  background: linear-gradient(135deg, rgba(45,212,191,0.25), rgba(139,92,246,0.2));
+  color: var(--aqua-bright);
+}
+.obook-card { width: 100%; max-width: 560px; }
+.obook-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.obook-head img { border-radius: 12px; }
+.obook-head h1 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 22px;
+  color: #f2fffd;
+  margin-bottom: 4px;
+}
+.obook-head h1 svg { color: var(--aqua-bright); }
+.obook-head .clinic-sub { margin-bottom: 0; }
+.obook-subject-note { color: rgba(229,193,88,0.8); font-size: 12px; }
+.obook-done-icon { background: linear-gradient(135deg, #22c55e, var(--aqua)); }
+.clinic-web-request { border-color: rgba(94,234,212,0.35); background: rgba(45,212,191,0.06); cursor: default; }
+.clinic-appt-section h4 svg { vertical-align: -2px; margin-right: 4px; color: var(--aqua-bright); }

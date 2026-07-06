@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { X, MessageCircle, Phone, MapPin, ChevronRight } from 'lucide-react';
+import { X, MessageCircle, Phone, MapPin, ChevronRight, CalendarCheck } from 'lucide-react';
 import { useLang } from './LanguageProvider';
 import { LiveStatusBadge } from './LiveStatus';
 import { WA_URL, TEL, PHONE_DISPLAY, MAPS_URL } from '@/lib/translations';
@@ -34,6 +34,15 @@ export default function BookNowModal({ open, onClose }: { open: boolean; onClose
         <p className="book-sub">{t('book.sub')}</p>
 
         <div className="book-options">
+          <a href="/book" className="book-option book-option-online">
+            <span className="book-option-icon"><CalendarCheck size={22} /></span>
+            <span className="book-option-text">
+              <strong>{t('book.online')}</strong>
+              <small>{t('book.onlineDesc')}</small>
+            </span>
+            <ChevronRight size={18} className="book-option-arrow" />
+          </a>
+
           <a href={WA_URL} target="_blank" rel="noopener" className="book-option book-option-wa">
             <span className="book-option-icon"><MessageCircle size={22} /></span>
             <span className="book-option-text">

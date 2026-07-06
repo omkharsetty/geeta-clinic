@@ -224,6 +224,20 @@ service cloud.firestore {
         && (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000));
     }
 
+    function isValidWebBooking(data) {
+      return data.keys().hasAll(['patientName', 'phone', 'date', 'slot', 'type', 'specialty', 'status', 'createdAt'])
+        && data.keys().size() <= 9
+        && data.patientName is string && data.patientName.size() > 0 && data.patientName.size() <= 100
+        && data.phone is string && data.phone.size() >= 10 && data.phone.size() <= 30
+        && data.date is string && data.date.size() > 0 && data.date.size() <= 20
+        && data.slot is string && data.slot.size() > 0 && data.slot.size() <= 20
+        && (data.type == 'In-Person Clinic' || data.type == 'Video Teleconsultation')
+        && data.specialty is string && data.specialty.size() > 0 && data.specialty.size() <= 100
+        && data.status == 'Requested'
+        && data.createdAt is string && data.createdAt.size() <= 50
+        && (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000));
+    }
+
     // Match Rules for Collections
 
     // Collection-group access so the clinic console can query appointments
@@ -241,6 +255,14 @@ service cloud.firestore {
     // Collection-group access for the billing tab (bills across all patients).
     match /{path=**}/bills/{billId} {
       allow get, list: if isActiveStaff();
+    }
+
+    // Booking requests from the public website (no patient account needed).
+    // Anyone signed in (incl. anonymous) may create a valid request;
+    // only staff can read, confirm, or remove them.
+    match /webBookings/{requestId} {
+      allow create: if isSignedIn() && isValidWebBooking(request.resource.data);
+      allow get, list, update, delete: if isActiveStaff();
     }
 
     // Bills for walk-in / unregistered patients. Staff create; doctor deletes.

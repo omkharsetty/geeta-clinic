@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collectionGroup, collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
-import { CalendarDays, Phone, Video, MapPin, User, Plus, Trash2, PhoneCall, Send } from 'lucide-react';
+import { collectionGroup, collection, onSnapshot, deleteDoc, doc, addDoc } from 'firebase/firestore';
+import { CalendarDays, Phone, Video, MapPin, User, Plus, Trash2, PhoneCall, Send, Globe, Check } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { StaffAppointment, slotMinutes, todayStr, formatDate } from './clinic-data';
 import NewBookingModal from './NewBookingModal';
@@ -12,6 +12,7 @@ import { appointmentReminder } from '@/lib/reminders';
 export default function AppointmentsTab({ onOpenPatient }: { onOpenPatient: (uid: string) => void }) {
   const [patientAppts, setPatientAppts] = useState<StaffAppointment[]>([]);
   const [clinicAppts, setClinicAppts] = useState<StaffAppointment[]>([]);
+  const [webRequests, setWebRequests] = useState<StaffAppointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showNew, setShowNew] = useState(false);
@@ -44,8 +45,45 @@ export default function AppointmentsTab({ onOpenPatient }: { onOpenPatient: (uid
       setClinicAppts(rows);
     }, onErr);
 
-    return () => { unsub1(); unsub2(); };
+    const unsub3 = onSnapshot(collection(db, 'webBookings'), (snap) => {
+      const rows: StaffAppointment[] = [];
+      snap.forEach((d) => {
+        rows.push({ id: d.id, uid: '', source: 'clinic', ...(d.data() as Omit<StaffAppointment, 'id' | 'uid' | 'source'>) });
+      });
+      rows.sort((a, b) => (a.date + slotMinutes(a.slot)).toString().localeCompare((b.date + slotMinutes(b.slot)).toString()));
+      setWebRequests(rows);
+    }, onErr);
+
+    return () => { unsub1(); unsub2(); unsub3(); };
   }, []);
+
+  const confirmWebRequest = async (r: StaffAppointment) => {
+    try {
+      const randId = 'GEC-' + Math.floor(100000 + Math.random() * 900000);
+      await addDoc(collection(db, 'clinicBookings'), {
+        patientName: r.patientName,
+        phone: r.phone,
+        date: r.date,
+        slot: r.slot,
+        type: r.type,
+        specialty: r.specialty,
+        ...(r.notes ? { notes: r.notes } : {}),
+        qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`GeetaEndocrineClinic-AP-${randId}`)}`,
+      });
+      await deleteDoc(doc(db, 'webBookings', r.id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  const rejectWebRequest = async (r: StaffAppointment) => {
+    if (!window.confirm(`Remove ${r.patientName}'s online request for ${r.slot} on ${formatDate(r.date)}?`)) return;
+    try {
+      await deleteDoc(doc(db, 'webBookings', r.id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  };
 
   const appointments = [...patientAppts, ...clinicAppts];
 
@@ -129,6 +167,37 @@ export default function AppointmentsTab({ onOpenPatient }: { onOpenPatient: (uid
         </button>
       </div>
       {error && <p className="clinic-error">{error}</p>}
+
+      {webRequests.length > 0 && (
+        <div className="clinic-appt-section">
+          <h4><Globe size={13} /> Online requests — confirm with patient <span className="clinic-count">{webRequests.length}</span></h4>
+          {webRequests.map((r) => (
+            <div key={r.id} className="clinic-appt-row clinic-web-request">
+              <span className="clinic-appt-slot">{r.slot}</span>
+              <span className="clinic-appt-main">
+                <strong><Globe size={13} /> {r.patientName}</strong>
+                <small>{r.specialty}{r.notes ? ` — ${r.notes}` : ''}</small>
+              </span>
+              <span className="clinic-appt-side">
+                <small className="clinic-appt-date">{formatDate(r.date)}</small>
+                <small className="clinic-appt-type">
+                  {r.type === 'Video Teleconsultation' ? <Video size={12} /> : <MapPin size={12} />}
+                  {r.type === 'Video Teleconsultation' ? 'Video' : 'Clinic'}
+                </small>
+                {r.phone && (
+                  <a href={`tel:${r.phone}`} className="clinic-appt-phone"><Phone size={12} /> {r.phone}</a>
+                )}
+              </span>
+              <button className="btn btn-primary clinic-fu-book" onClick={() => confirmWebRequest(r)} title="Confirm booking">
+                <Check size={14} /> Confirm
+              </button>
+              <button className="clinic-icon-btn" onClick={() => rejectWebRequest(r)} aria-label="Remove request" title="Remove request">
+                <Trash2 size={15} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       <Section title="Today" rows={todays} empty="No appointments today." />
       <Section title="Upcoming" rows={upcoming} empty="Nothing scheduled ahead." />
