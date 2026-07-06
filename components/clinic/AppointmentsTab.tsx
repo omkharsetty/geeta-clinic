@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { collectionGroup, collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
-import { CalendarDays, Phone, Video, MapPin, User, Plus, Trash2, PhoneCall } from 'lucide-react';
+import { CalendarDays, Phone, Video, MapPin, User, Plus, Trash2, PhoneCall, Send } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { StaffAppointment, slotMinutes, todayStr, formatDate } from './clinic-data';
 import NewBookingModal from './NewBookingModal';
+import ReminderModal from './ReminderModal';
+import { appointmentReminder } from '@/lib/reminders';
 
 export default function AppointmentsTab({ onOpenPatient }: { onOpenPatient: (uid: string) => void }) {
   const [patientAppts, setPatientAppts] = useState<StaffAppointment[]>([]);
@@ -13,6 +15,7 @@ export default function AppointmentsTab({ onOpenPatient }: { onOpenPatient: (uid
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showNew, setShowNew] = useState(false);
+  const [remind, setRemind] = useState<StaffAppointment | null>(null);
 
   useEffect(() => {
     const onErr = (err: Error) => {
@@ -87,6 +90,16 @@ export default function AppointmentsTab({ onOpenPatient }: { onOpenPatient: (uid
           </a>
         )}
       </span>
+      {a.phone && (
+        <button
+          className="clinic-icon-btn"
+          onClick={(e) => { e.stopPropagation(); setRemind(a); }}
+          aria-label="Send reminder"
+          title="Send reminder"
+        >
+          <Send size={15} />
+        </button>
+      )}
       <button
         className="clinic-icon-btn"
         onClick={(e) => { e.stopPropagation(); cancel(a); }}
@@ -131,6 +144,14 @@ export default function AppointmentsTab({ onOpenPatient }: { onOpenPatient: (uid
           taken={appointments}
           onClose={() => setShowNew(false)}
           onBooked={() => {}}
+        />
+      )}
+      {remind && (
+        <ReminderModal
+          patientName={remind.patientName}
+          phone={remind.phone}
+          initialMessage={appointmentReminder(remind.patientName, remind.date, remind.slot, remind.type)}
+          onClose={() => setRemind(null)}
         />
       )}
     </div>

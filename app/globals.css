@@ -2504,3 +2504,23 @@ button { font-family: inherit; }
   box-shadow: 0 0 12px rgba(45,212,191,0.4);
   min-width: 3px;
 }
+
+/* ---------- Reminder modal ---------- */
+.clinic-reminder-text {
+  font-size: 13.5px !important;
+  line-height: 1.6;
+}
+.clinic-reminder-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.clinic-reminder-actions .btn { flex: 1; justify-content: center; min-width: 110px; }
+.clinic-reminder-alt {
+  background: rgba(255,255,255,0.06) !important;
+  color: #d6f0ed !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
+}
+.clinic-reminder-alt:hover { border-color: var(--aqua) !important; color: #fff !important; }
+.clinic-reminder-note { color: rgba(214,240,237,0.5); font-size: 12.5px; text-align: center; }
+.clinic-reminder-note strong { color: rgba(214,240,237,0.85); }

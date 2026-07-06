@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Phone, CalendarPlus, CheckCircle2, BellRing } from 'lucide-react';
+import { Phone, CalendarPlus, CheckCircle2, BellRing, Send } from 'lucide-react';
 import { FollowUpRow } from './useFollowUps';
 import { StaffAppointment, formatDate } from './clinic-data';
 import NewBookingModal from './NewBookingModal';
+import ReminderModal from './ReminderModal';
+import { followUpReminder } from '@/lib/reminders';
 
 export default function FollowUpsTab({
   rows,
@@ -18,6 +20,7 @@ export default function FollowUpsTab({
   onOpenPatient: (uid: string) => void;
 }) {
   const [bookFor, setBookFor] = useState<FollowUpRow | null>(null);
+  const [remindFor, setRemindFor] = useState<FollowUpRow | null>(null);
 
   const buckets: { key: FollowUpRow['bucket']; title: string; empty?: string }[] = [
     { key: 'overdue', title: 'Overdue — call these patients', empty: 'Nothing overdue. 🎉' },
@@ -41,9 +44,14 @@ export default function FollowUpsTab({
       </span>
       <span className="clinic-fu-actions" onClick={(e) => e.stopPropagation()}>
         {r.patient?.phone && (
-          <a href={`tel:${r.patient.phone}`} className="clinic-icon-btn" title="Call patient" aria-label="Call patient">
-            <Phone size={15} />
-          </a>
+          <>
+            <button className="clinic-icon-btn" title="Send reminder" aria-label="Send reminder" onClick={() => setRemindFor(r)}>
+              <Send size={15} />
+            </button>
+            <a href={`tel:${r.patient.phone}`} className="clinic-icon-btn" title="Call patient" aria-label="Call patient">
+              <Phone size={15} />
+            </a>
+          </>
         )}
         {r.scheduled ? (
           <span className="clinic-fu-scheduled"><CheckCircle2 size={14} /> Scheduled</span>
@@ -84,6 +92,14 @@ export default function FollowUpsTab({
           presetDate={bookFor.followUpDate}
           onClose={() => setBookFor(null)}
           onBooked={() => {}}
+        />
+      )}
+      {remindFor && remindFor.patient?.phone && (
+        <ReminderModal
+          patientName={remindFor.patient.name}
+          phone={remindFor.patient.phone}
+          initialMessage={followUpReminder(remindFor.patient.name, remindFor.followUpDate)}
+          onClose={() => setRemindFor(null)}
         />
       )}
     </div>
