@@ -7,3 +7,4 @@ out
 static-backup/
 .claude/
 tsconfig.tsbuildinfo
+ARCHITECTURE.md
