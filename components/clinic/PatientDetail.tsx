@@ -4,10 +4,14 @@ import { useState, useEffect } from 'react';
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import {
   ArrowLeft, Phone, MapPin, Droplet, Activity, CalendarDays, FileText, Download,
+  Stethoscope, Plus, Printer,
 } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { GlucoseLog, ThyroidLog, Appointment, ExternalReport, UserProfile } from '@/lib/portal-types';
+import { Visit } from '@/lib/visit-types';
 import { slotMinutes, formatDate } from './clinic-data';
+import VisitForm from './VisitForm';
+import PrescriptionPrint from './PrescriptionPrint';
 
 const glucoseClass = (v: number, type: string) => {
   const high = type === 'Fasting' ? 126 : 200;
@@ -22,18 +26,22 @@ export default function PatientDetail({ uid, onBack }: { uid: string; onBack: ()
   const [thyroid, setThyroid] = useState<ThyroidLog[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [reports, setReports] = useState<ExternalReport[]>([]);
+  const [visits, setVisits] = useState<Visit[]>([]);
+  const [showVisitForm, setShowVisitForm] = useState(false);
+  const [printVisit, setPrintVisit] = useState<Visit | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     (async () => {
       try {
-        const [prof, g, t, a, r] = await Promise.all([
+        const [prof, g, t, a, r, vi] = await Promise.all([
           getDoc(doc(db, 'users', uid)),
           getDocs(collection(db, 'users', uid, 'glucoseLogs')),
           getDocs(collection(db, 'users', uid, 'thyroidLogs')),
           getDocs(collection(db, 'users', uid, 'appointments')),
           getDocs(collection(db, 'users', uid, 'externalReports')),
+          getDocs(collection(db, 'users', uid, 'visits')),
         ]);
         setProfile(prof.exists() ? (prof.data() as UserProfile) : null);
 
@@ -56,6 +64,11 @@ export default function PatientDetail({ uid, onBack }: { uid: string; onBack: ()
         r.forEach((d) => rl.push({ id: d.id, ...d.data() } as ExternalReport));
         rl.sort((x, y) => new Date(y.uploadedAt).getTime() - new Date(x.uploadedAt).getTime());
         setReports(rl);
+
+        const vl: Visit[] = [];
+        vi.forEach((d) => vl.push({ id: d.id, ...d.data() } as Visit));
+        vl.sort((x, y) => new Date(y.date).getTime() - new Date(x.date).getTime());
+        setVisits(vl);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         setError(msg.includes('permission')
@@ -79,13 +92,41 @@ export default function PatientDetail({ uid, onBack }: { uid: string; onBack: ()
 
       <div className="clinic-detail-head">
         <span className="clinic-avatar clinic-avatar-lg">{(profile?.name || 'P').charAt(0).toUpperCase()}</span>
-        <div>
+        <div style={{ flex: 1 }}>
           <h2>{profile?.name || 'Patient'}</h2>
           <p className="clinic-detail-meta">
             {profile?.phone && <span><Phone size={12} /> <a href={`tel:${profile.phone}`}>{profile.phone}</a></span>}
             {profile?.address && <span><MapPin size={12} /> {profile.address}</span>}
             <span>{profile?.email}</span>
           </p>
+        </div>
+        <button className="btn btn-primary" onClick={() => setShowVisitForm(true)}>
+          <Plus size={16} /> New visit
+        </button>
+      </div>
+
+      <div className="clinic-card clinic-visits-card">
+        <h3><Stethoscope size={16} /> Visits <span className="clinic-count">{visits.length}</span></h3>
+        {visits.length === 0 && <p className="clinic-empty">No visits recorded yet — use &ldquo;New visit&rdquo; during a consultation.</p>}
+        <div className="clinic-mini-list">
+          {visits.map((v) => (
+            <div key={v.id} className="clinic-mini-row clinic-visit-row">
+              <span className="clinic-mini-date" style={{ minWidth: 88 }}>
+                {new Date(v.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: '2-digit' })}
+              </span>
+              <span className="clinic-mini-main">
+                {v.diagnosis || v.complaint || 'Consultation'}
+                <br />
+                <small>
+                  {v.prescriptions.length} medicine{v.prescriptions.length === 1 ? '' : 's'}
+                  {v.followUpDate ? ` · follow-up ${formatDate(v.followUpDate)}` : ''} · by {v.createdBy}
+                </small>
+              </span>
+              <button className="clinic-icon-btn" onClick={() => setPrintVisit(v)} aria-label="Print prescription" title="Print prescription">
+                <Printer size={14} />
+              </button>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -150,6 +191,22 @@ export default function PatientDetail({ uid, onBack }: { uid: string; onBack: ()
           </div>
         </div>
       </div>
+
+      {showVisitForm && (
+        <VisitForm
+          uid={uid}
+          patientName={profile?.name || 'Patient'}
+          onClose={() => setShowVisitForm(false)}
+          onSaved={(v) => {
+            setVisits((prev) => [v, ...prev]);
+            setShowVisitForm(false);
+            setPrintVisit(v);
+          }}
+        />
+      )}
+      {printVisit && (
+        <PrescriptionPrint visit={printVisit} profile={profile} onClose={() => setPrintVisit(null)} />
+      )}
     </div>
   );
 }

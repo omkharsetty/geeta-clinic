@@ -195,6 +195,18 @@ service cloud.firestore {
         );
     }
 
+    function isValidVisit(data) {
+      return data.keys().hasAll(['date', 'createdBy', 'prescriptions'])
+        && data.date is string && data.date.size() > 0 && data.date.size() <= 50
+        && (data.createdBy == 'doctor' || data.createdBy == 'staff')
+        && data.prescriptions is list && data.prescriptions.size() <= 30
+        && (!('vitals' in data) || data.vitals is map)
+        && (!('complaint' in data) || (data.complaint is string && data.complaint.size() <= 2000))
+        && (!('diagnosis' in data) || (data.diagnosis is string && data.diagnosis.size() <= 2000))
+        && (!('advice' in data) || (data.advice is string && data.advice.size() <= 2000))
+        && (!('followUpDate' in data) || (data.followUpDate is string && data.followUpDate.size() <= 20));
+    }
+
     // Match Rules for Collections
 
     // Collection-group access so the clinic console can query appointments
@@ -260,6 +272,15 @@ service cloud.firestore {
         allow create: if isOwner(userId) && isValidId(userId) && isVerifiedUser() && isValidAppointment(request.resource.data);
         allow update: if isOwner(userId) && isValidId(userId) && isVerifiedUser() && isValidAppointment(request.resource.data);
         allow delete: if isOwner(userId) && isValidId(userId);
+      }
+
+      // Clinic visit records (vitals, notes, prescriptions) — written by
+      // staff in the web console; patients may read their own.
+      match /visits/{visitId} {
+        allow get, list: if isActiveStaff();
+        allow get, list: if isOwner(userId) && isValidId(userId);
+        allow create, update: if isActiveStaff() && isValidVisit(request.resource.data);
+        allow delete: if isActiveStaff();
       }
 
       match /externalReports/{reportId} {
