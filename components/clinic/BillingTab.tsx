@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { collectionGroup, collection, onSnapshot } from 'firebase/firestore';
-import { IndianRupee, Plus, Printer, Banknote, Smartphone, CreditCard } from 'lucide-react';
+import { IndianRupee, Plus, Printer, Banknote, Smartphone, CreditCard, ReceiptText, BarChart3 } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { Bill, inr } from '@/lib/bill-types';
 import { todayStr } from './clinic-data';
 import BillForm from './BillForm';
 import ReceiptPrint from './ReceiptPrint';
+import BillingReports from './BillingReports';
 
 const MODE_ICON = { Cash: Banknote, UPI: Smartphone, Card: CreditCard } as const;
 
@@ -15,6 +16,7 @@ export default function BillingTab() {
   const [patientBills, setPatientBills] = useState<Bill[]>([]);
   const [clinicBills, setClinicBills] = useState<Bill[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [view, setView] = useState<'bills' | 'reports'>('bills');
   const [printBill, setPrintBill] = useState<Bill | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -71,7 +73,21 @@ export default function BillingTab() {
         </button>
       </div>
 
+      <div className="clinic-mode-toggle clinic-billing-views">
+        <button className={view === 'bills' ? 'active' : ''} onClick={() => setView('bills')}>
+          <ReceiptText size={14} /> Bills
+        </button>
+        <button className={view === 'reports' ? 'active' : ''} onClick={() => setView('reports')}>
+          <BarChart3 size={14} /> Reports
+        </button>
+      </div>
+
       {error && <p className="clinic-error">{error}</p>}
+
+      {view === 'reports' ? (
+        <BillingReports bills={bills} />
+      ) : (
+      <>
       {bills.length === 0 && !error && (
         <p className="clinic-empty"><IndianRupee size={15} /> No bills yet — create the first one.</p>
       )}
@@ -98,6 +114,8 @@ export default function BillingTab() {
           </div>
         ))}
       </div>
+      </>
+      )}
 
       {showForm && (
         <BillForm
