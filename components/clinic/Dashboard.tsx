@@ -1,15 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { CalendarDays, Users, BellRing } from 'lucide-react';
+import { CalendarDays, Users, BellRing, IndianRupee } from 'lucide-react';
 import AppointmentsTab from './AppointmentsTab';
 import PatientsTab from './PatientsTab';
 import PatientDetail from './PatientDetail';
 import FollowUpsTab from './FollowUpsTab';
+import BillingTab from './BillingTab';
 import { useFollowUps } from './useFollowUps';
 import { useStaffAppointments } from './useStaffAppointments';
 
-type Tab = 'appointments' | 'followups' | 'patients';
+type Tab = 'appointments' | 'followups' | 'patients' | 'billing';
 
 export default function Dashboard() {
   const [tab, setTab] = useState<Tab>('appointments');
@@ -34,12 +35,16 @@ export default function Dashboard() {
         <button className={tab === 'patients' ? 'active' : ''} onClick={() => setTab('patients')}>
           <Users size={16} /> Patients
         </button>
+        <button className={tab === 'billing' ? 'active' : ''} onClick={() => setTab('billing')}>
+          <IndianRupee size={16} /> Billing
+        </button>
       </nav>
       {tab === 'appointments' && <AppointmentsTab onOpenPatient={setPatientUid} />}
       {tab === 'followups' && (
         <FollowUpsTab rows={followUps} error={fuError} taken={allAppointments} onOpenPatient={setPatientUid} />
       )}
       {tab === 'patients' && <PatientsTab onOpenPatient={setPatientUid} />}
+      {tab === 'billing' && <BillingTab />}
     </div>
   );
 }

@@ -2386,3 +2386,68 @@ button { font-family: inherit; }
   background: rgba(110,231,160,0.1);
   border-radius: var(--radius-full);
 }
+
+/* ---------- Billing ---------- */
+.clinic-bill-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.clinic-bill-stat {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  min-width: 130px;
+}
+.clinic-bill-stat small {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(214,240,237,0.55);
+}
+.clinic-bill-stat strong {
+  font-family: var(--font-fraunces), serif;
+  font-size: 22px;
+  color: var(--aqua-bright);
+  line-height: 1.2;
+}
+.clinic-bill-stat span { font-size: 11.5px; color: rgba(214,240,237,0.5); }
+.clinic-bill-summary .btn { margin-left: auto; }
+.clinic-bill-amount { width: 110px; }
+.clinic-bill-amount-lg {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--aqua-bright);
+  min-width: 92px;
+}
+.clinic-bill-total { display: flex; flex-direction: column; }
+.clinic-bill-total strong {
+  font-family: var(--font-fraunces), serif;
+  font-size: 26px;
+  color: var(--aqua-bright);
+  padding: 6px 0;
+}
+
+/* Receipt print */
+.rx-receipt-title {
+  font-size: 15px;
+  letter-spacing: 0.35em;
+  color: #0d7377;
+  margin: 4px 0 12px;
+}
+.rx-amount { text-align: right; white-space: nowrap; }
+.rx-receipt-table .rx-total-row td {
+  border-top: 2px solid #0d7377;
+  border-bottom: none;
+  font-size: 15px;
+}

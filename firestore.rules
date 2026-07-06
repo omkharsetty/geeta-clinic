@@ -211,6 +211,19 @@ service cloud.firestore {
         && (!('followUpDate' in data) || (data.followUpDate is string && data.followUpDate.size() <= 20));
     }
 
+    function isValidBill(data) {
+      return data.keys().hasAll(['receiptNo', 'patientName', 'phone', 'date', 'items', 'total', 'paymentMode', 'createdBy'])
+        && data.receiptNo is string && data.receiptNo.size() > 0 && data.receiptNo.size() <= 40
+        && data.patientName is string && data.patientName.size() > 0 && data.patientName.size() <= 100
+        && data.phone is string && data.phone.size() <= 30
+        && data.date is string && data.date.size() > 0 && data.date.size() <= 50
+        && data.items is list && data.items.size() > 0 && data.items.size() <= 20
+        && (data.total is int || data.total is float) && data.total >= 0 && data.total <= 1000000
+        && (data.paymentMode == 'Cash' || data.paymentMode == 'UPI' || data.paymentMode == 'Card')
+        && (data.createdBy == 'doctor' || data.createdBy == 'staff')
+        && (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000));
+    }
+
     // Match Rules for Collections
 
     // Collection-group access so the clinic console can query appointments
@@ -223,6 +236,18 @@ service cloud.firestore {
     // patients). Read-only.
     match /{path=**}/visits/{visitId} {
       allow get, list: if isActiveStaff();
+    }
+
+    // Collection-group access for the billing tab (bills across all patients).
+    match /{path=**}/bills/{billId} {
+      allow get, list: if isActiveStaff();
+    }
+
+    // Bills for walk-in / unregistered patients. Staff create; doctor deletes.
+    match /clinicBills/{billId} {
+      allow get, list: if isActiveStaff();
+      allow create: if isActiveStaff() && isValidBill(request.resource.data);
+      allow update, delete: if isDoctor();
     }
 
     // Bookings created by clinic staff for callers who are not registered
@@ -300,6 +325,14 @@ service cloud.firestore {
             && !('followUpDate' in request.resource.data)
           ));
         allow delete: if isDoctor();
+      }
+
+      // Bills for registered patients (patients may read their own).
+      match /bills/{billId} {
+        allow get, list: if isActiveStaff();
+        allow get, list: if isOwner(userId) && isValidId(userId);
+        allow create: if isActiveStaff() && isValidBill(request.resource.data);
+        allow update, delete: if isDoctor();
       }
 
       match /externalReports/{reportId} {
